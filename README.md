@@ -34,4 +34,4 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/sou-toca.git
+   git clone https://github.com/Renezin13/SouTOCA-System.git
