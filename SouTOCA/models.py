@@ -15,7 +15,7 @@ class tb_usuarios(models.Model):
     usr_nome = models.CharField(max_length=255)
     usr_email = models.EmailField(max_length=255)
     usr_senha = models.CharField(max_length=255)  # Campo para armazenar a senha hasheada
-    usr_imagem = models.ImageField(upload_to="SouTOCA/static/user_imagens", blank=True, validators=[validate_image_size])
+    usr_imagem = models.ImageField(upload_to="SouTOCA/static/user_images/", blank=True, validators=[validate_image_size])
 
     def save(self, *args, **kwargs):
         # Garante que a senha seja hasheada antes de salvar
