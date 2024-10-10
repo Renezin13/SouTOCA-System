@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+}
+
+.btn {
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    width: 50%;
+    background-image: url('SouTOCA.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.imgLogo {
+    width: 20%;
+    margin: 3%;
+}
+
+.media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+@media (max-width: 1280px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .formulario {
+        width: 100%;
+    }
+}
