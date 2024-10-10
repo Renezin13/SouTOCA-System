@@ -29,32 +29,40 @@
                 <h1 style="font-weight: bold; color: black; font-family: 'Roboto', sans-serif; font-size: 38pt;" class="mb-3">Cadastrar-se
                 </h1>
                 <h5 style="font-family: 'Roboto', sans-serif;" class="mb-5">Entre agora para a melhor torcida dos IFs</h5>
-                <form class="forms" style="width: 65%;">
+                
+                <!-- Adicionar o token CSRF -->
+                <form class="forms" style="width: 65%;" id="registerForm" method="POST">
+                    {% csrf_token %}
+
                     <div class="form-floating mb-3">
-                        <input type="name" class="form-control" id="floatingName" placeholder="name@example.com">
-                        <label for="floatingInput">Nome do usuário</label>
+                        <input type="text" class="form-control" id="name" placeholder="Nome do usuário">
+                        <label for="name">Nome do usuário</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Endereço de Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Endereço de Email">
+                        <label for="email">Endereço de Email</label>
                     </div>
-                    <div style="display: flex;" class="mb-3 form-floating  ">
-                        <input style="display: flex; border-radius: 0px 0px 0px 10px;" type="password"
-                            class="form-control rounded-start" id="floatingPassword" placeholder="Password">
-                        <label style="display: flex;" for="floatingPassword">Senha</label>
-                        <span style="width: 10%; border-radius: 0px 0px 10px;" class="input-group-text rounded-end">
-                            <img style="width: 100%; cursor: pointer;" class="fa fa-eye" id="togglePassword"
-                                src="../static/viewPassword.png" alt="">
+                    <div style="display: flex;" class="mb-3 form-floating">
+                        
+                        <input style="display: flex; border-radius: 0px 0px 0px 10px;" 
+                            type="password" 
+                            class="form-control rounded-start" 
+                            id="floatingPassword"
+                            placeholder="Senha">
+                        <label style="display: flex;" for="password">Senha</label>
+
+                        <span style="width: 10%; border-radius: 0px 0px 10px;" 
+                            class="input-group-text rounded-end">
+                            <img style="width: 100%; cursor: pointer;" 
+                                class="fa fa-eye" 
+                                id="togglePassword" 
+                                src="../static/viewPassword.png" 
+                                alt="">
                         </span>
                     </div>
 
-                    <button style="background-color: black; border-color: black;" type="submit"
-                        class="mb-3 btn btn-success">Cadastrar-se</button>
-                    <button style="display: flex; align-items: center; justify-content: center;" type="submit"
-                        class="mb-5 btn active"><img class=" me-2" style="width: 4%;" src="../static/logoGoogle.png" alt="">Cadastre-se com o Google</button>
-                    <p style="display: flex; justify-content: center; width: 100%;">Já tem uma conta? <a
-                            style="color: black;" class="link-underline-secondary ms-1" href="#"> Login</a></p>
-                </form>
+                    <button style="background-color: black; border-color: black;" type="button" id="registerBtn" class="mb-3 btn btn-success">Cadastrar-se</button>
+                </form>                
             </div>
             <div class="mb-4 footer"
                 style="height: 10%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -67,19 +75,53 @@
     </div>
 
     <script>
-        const togglePassword = document.querySelector("#togglePassword");
-        const password = document.querySelector("#floatingPassword");
-
-        togglePassword.addEventListener("click", function () {
-
-            // toggle the type attribute
-            const type = password.getAttribute("type") === "password" ? "text" : "password";
-            password.setAttribute("type", type);
-            // toggle the eye icon
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.querySelector("#togglePassword");
+            const password = document.querySelector("#floatingPassword");
+    
+            togglePassword.addEventListener("click", function () {
+                const type = password.getAttribute("type") === "password" ? "text" : "password";
+                password.setAttribute("type", type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+    
+            document.getElementById("registerBtn").addEventListener("click", function () {
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("floatingPassword").value;
+    
+                fetch('/register/', {  // Adicione a barra no final do URL
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'  // Verifique se isso é necessário em seu contexto
+                    },
+                    body: JSON.stringify({
+                        'name': name,
+                        'email': email,
+                        'password': password
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Usuário registrado com sucesso!');
+                        window.location.href = '/login';  // Redireciona para a página de login
+                    } else {
+                        alert('Erro ao registrar usuário: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
+            });
         });
     </script>
+    
 
 </body>
 

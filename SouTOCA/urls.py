@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
   path('', views.main_menu, name="SouTOCA"),
   path('login/', views.login, name="Login"),
-  # path('register/', views.register, name="register"),
+  path('register/', views.register, name="register"),
 
 
   # path('noticias/', views.noticias, name="noticias"),
