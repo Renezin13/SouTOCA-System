@@ -1,9 +1,7 @@
-import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.http import JsonResponse
 from .models import tb_usuarios
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 
 # Create your views here.
@@ -20,31 +18,30 @@ def login(request):
     }
     return render(request, 'login.html', context)
 
-@csrf_exempt
 def register(request):
-    context = {
-        'title': 'SouTOCA - Registro'
-    }
-    
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            name = data.get('name')
-            email = data.get('email')
-            password = data.get('password')
+        nome = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
-            # Lógica para criar o usuário...
-            user = tb_usuarios(
-                usr_nome=name,
-                usr_email=email,
-                usr_senha=password
-            )
+        if nome and email and password:  # Verifique se todos os campos estão preenchidos
+            # Crie o usuário do Django
+            user = User.objects.create_user(username=email, email=email, password=password)
             user.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Erro ao decodificar JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    # Se não for uma requisição POST, renderize o template
-    return render(request, 'register.html', context)
+            # Agora crie o objeto tb_usuarios
+            usuario = tb_usuarios(
+                usr_user=user,
+                usr_nome=nome,
+                usr_email=email,
+                usr_senha=password  # Ou pode deixar a senha como `None` se você já a hashear
+            )
+            usuario.save()
+            
+            # Mensagem de sucesso
+            messages.success(request, 'Usuário registrado com sucesso!')
+            return redirect('login/')  # Ajuste o redirecionamento conforme necessário
+        else:
+            messages.error(request, 'Preencha todos os campos.')
+
+    return render(request, 'register.html')

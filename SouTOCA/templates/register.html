@@ -33,24 +33,22 @@
                 <!-- Adicionar o token CSRF -->
                 <form class="forms" style="width: 65%;" id="registerForm" method="POST">
                     {% csrf_token %}
-
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="name" placeholder="Nome do usuário">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nome do usuário">
                         <label for="name">Nome do usuário</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" placeholder="Endereço de Email">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Endereço de Email">
                         <label for="email">Endereço de Email</label>
                     </div>
                     <div style="display: flex;" class="mb-3 form-floating">
-                        
                         <input style="display: flex; border-radius: 0px 0px 0px 10px;" 
                             type="password" 
                             class="form-control rounded-start" 
                             id="floatingPassword"
+                            name="password"
                             placeholder="Senha">
-                        <label style="display: flex;" for="password">Senha</label>
-
+                        <label style="display: flex;" for="floatingPassword">Senha</label>
                         <span style="width: 10%; border-radius: 0px 0px 10px;" 
                             class="input-group-text rounded-end">
                             <img style="width: 100%; cursor: pointer;" 
@@ -60,9 +58,9 @@
                                 alt="">
                         </span>
                     </div>
-
-                    <button style="background-color: black; border-color: black;" type="button" id="registerBtn" class="mb-3 btn btn-success">Cadastrar-se</button>
-                </form>                
+                    <button style="background-color: black; border-color: black;" type="submit" id="registerBtn" class="mb-3 btn btn-success">Cadastrar-se</button>
+                </form>
+                    
             </div>
             <div class="mb-4 footer"
                 style="height: 10%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -78,47 +76,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             const togglePassword = document.querySelector("#togglePassword");
             const password = document.querySelector("#floatingPassword");
-    
+
             togglePassword.addEventListener("click", function () {
                 const type = password.getAttribute("type") === "password" ? "text" : "password";
                 password.setAttribute("type", type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
-    
+        });
             document.getElementById("registerBtn").addEventListener("click", function () {
                 const name = document.getElementById("name").value;
                 const email = document.getElementById("email").value;
                 const password = document.getElementById("floatingPassword").value;
-    
-                fetch('/register/', {  // Adicione a barra no final do URL
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'  // Verifique se isso é necessário em seu contexto
-                    },
-                    body: JSON.stringify({
-                        'name': name,
-                        'email': email,
-                        'password': password
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Usuário registrado com sucesso!');
-                        window.location.href = '/login';  // Redireciona para a página de login
-                    } else {
-                        alert('Erro ao registrar usuário: ' + data.message);
-                    }
-                })
-                .catch(error => console.error('Erro:', error));
-            });
         });
     </script>
     
