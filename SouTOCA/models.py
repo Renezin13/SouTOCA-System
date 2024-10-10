@@ -67,7 +67,7 @@ class tb_noticias(models.Model):
     not_publishDate = models.DateField()
     not_image = models.ImageField(upload_to="SouTOCA/static/sport_images/", blank=True, validators=[validate_image_size(10)])
     not_usr_id = models.OneToOneField(tb_usuarios)
-    not_esp_id = models.OneToOneField(tb_esportes)
+    not_esp_id = models.OneToOneField(tb_esportes on_delete=models.CASCADE)
     not_img_id = models.OneToOneField(tb_imagens)
 
 
@@ -75,6 +75,6 @@ class tb_comentarios(models.Model):
    com_id = models.AutoField(primary_key=True)
    com_conteudo = models.TextField(max_length=255)
    com_publishDate = models.DateField()
-   com_usr_id = models.OneToOneField(tb_usuarios)
-   com_not_id = models.OneToOneField(tb_noticias)
+   com_usr_id = models.OneToOneField(tb_usuarios, on_delete=models.CASCADE)
+   com_not_id = models.OneToOneField(tb_noticias, on_delete=models.CASCADE)
 
